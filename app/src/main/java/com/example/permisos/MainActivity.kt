@@ -1,22 +1,20 @@
 package com.example.permisos
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.provider.Settings
+import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.reflect.Type
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,11 +27,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btnCapture.setOnClickListener {
+        btnTakePhoto.setOnClickListener {
             CapturePicture()
         }
         btnGallery.setOnClickListener {
             GetPhotoGallery()
+        }
+        btnTakeScreen.setOnClickListener {
+            Handler().postDelayed({
+                var view = window.decorView.rootView as View
+                view.isDrawingCacheEnabled = true
+                imgFoto.setImageBitmap(view.drawingCache)
+                view.isDrawingCacheEnabled = false
+            }, 1000)
+
+        }
+        btnSaveImage.setOnClickListener {
+
         }
     }
 
@@ -67,7 +77,6 @@ class MainActivity : AppCompatActivity() {
 
             }
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                Toast.makeText(this, "Permiso denegado para siempre", Toast.LENGTH_SHORT).show()
 
                 registerOpenSetting.launch(Intent().apply {
                     action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
